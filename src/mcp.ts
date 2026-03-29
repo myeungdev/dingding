@@ -1,21 +1,24 @@
 import 'dotenv/config';
 import { FastMCP, UserError } from 'fastmcp';
 import { z } from 'zod';
-import {
-  listAlarms,
-  createAlarm,
-  deleteAlarm,
-  deleteRingingAlarm,
-  parseDuration,
-  parseTime,
-} from './alarms';
+
+const API_URL = (process.env.DINGDING_API_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+
+async function apiFetch(path: string, options?: RequestInit) {
+  const res = await fetch(`${API_URL}${path}`, options);
+  if (res.status === 204) return null;
+  return res.json();
+}
 
 const server = new FastMCP({ name: 'dingding', version: '1.0.0' });
 
 server.addTool({
   name: 'list_alarms',
   description: 'List all active and ringing alarms/timers',
-  execute: async () => JSON.stringify(listAlarms(), null, 2),
+  execute: async () => {
+    const alarms = await apiFetch('/alarms');
+    return JSON.stringify(alarms, null, 2);
+  },
 });
 
 server.addTool({
@@ -26,14 +29,13 @@ server.addTool({
     label: z.string().optional().describe('Optional name for the timer'),
   }),
   execute: async ({ duration, label }) => {
-    let ms: number;
-    try {
-      ms = parseDuration(duration);
-    } catch (err) {
-      throw new UserError(err instanceof Error ? err.message : String(err));
-    }
-    const alarm = createAlarm(new Date(Date.now() + ms), label);
-    return JSON.stringify(alarm, null, 2);
+    const body = await apiFetch('/alarms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ duration, label }),
+    });
+    if (body?.error) throw new UserError(body.error);
+    return JSON.stringify(body, null, 2);
   },
 });
 
@@ -45,14 +47,13 @@ server.addTool({
     label: z.string().optional().describe('Optional name for the alarm'),
   }),
   execute: async ({ time, label }) => {
-    let triggerAt: Date;
-    try {
-      triggerAt = parseTime(time);
-    } catch (err) {
-      throw new UserError(err instanceof Error ? err.message : String(err));
-    }
-    const alarm = createAlarm(triggerAt, label);
-    return JSON.stringify(alarm, null, 2);
+    const body = await apiFetch('/alarms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ time, label }),
+    });
+    if (body?.error) throw new UserError(body.error);
+    return JSON.stringify(body, null, 2);
   },
 });
 
@@ -60,9 +61,8 @@ server.addTool({
   name: 'stop_ringing_alarm',
   description: 'Stop and dismiss the alarm that is currently playing sound',
   execute: async () => {
-    if (!deleteRingingAlarm()) {
-      throw new UserError('No alarm is currently ringing.');
-    }
+    const body = await apiFetch('/alarms/ringing', { method: 'DELETE' });
+    if (body?.error) throw new UserError(body.error);
     return 'Ringing alarm stopped.';
   },
 });
@@ -74,9 +74,8 @@ server.addTool({
     id: z.string().describe('The alarm ID to delete'),
   }),
   execute: async ({ id }) => {
-    if (!deleteAlarm(id)) {
-      throw new UserError(`Alarm "${id}" not found.`);
-    }
+    const body = await apiFetch(`/alarms/${id}`, { method: 'DELETE' });
+    if (body?.error) throw new UserError(body.error);
     return `Alarm "${id}" deleted.`;
   },
 });
