@@ -81,4 +81,11 @@ server.addTool({
   },
 });
 
-server.start({ transportType: 'stdio' });
+const transport = (process.env.MCP_TRANSPORT ?? 'stdio') as 'stdio' | 'httpStream';
+const port = Number(process.env.MCP_PORT ?? 3001);
+
+server.start(
+  transport === 'httpStream'
+    ? { transportType: 'httpStream', httpStream: { port } }
+    : { transportType: 'stdio' }
+);
