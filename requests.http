@@ -1,0 +1,51 @@
+@baseUrl = http://localhost:3000
+
+### List all active alarms
+GET {{baseUrl}}/alarms
+
+### Create a timer by duration (minutes)
+POST {{baseUrl}}/alarms
+Content-Type: application/json
+
+{
+  "duration": "2 minutes",
+  "label": "Pizza"
+}
+
+### Create a timer by duration (shorthand)
+POST {{baseUrl}}/alarms
+Content-Type: application/json
+
+{
+  "duration": "1h30m",
+  "label": "Nap"
+}
+
+### Create a timer by duration (seconds — good for quick testing)
+POST {{baseUrl}}/alarms
+Content-Type: application/json
+
+{
+  "duration": "10s",
+  "label": "Test"
+}
+
+### Create an alarm by exact time (12h format)
+POST {{baseUrl}}/alarms
+Content-Type: application/json
+
+{
+  "time": "7:30pm",
+  "label": "Standup"
+}
+
+### Create an alarm by exact time (24h format)
+POST {{baseUrl}}/alarms
+Content-Type: application/json
+
+{
+  "time": "19:30"
+}
+
+### Delete / stop an alarm (replace with real id)
+DELETE {{baseUrl}}/alarms/00000000-0000-0000-0000-000000000000
