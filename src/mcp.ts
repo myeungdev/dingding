@@ -3,6 +3,7 @@ import { FastMCP, UserError } from 'fastmcp';
 import { z } from 'zod';
 
 const API_URL = (process.env.DINGDING_API_URL ?? 'http://localhost:3000').replace(/\/$/, '');
+const INSTANCE_NAME = process.env.INSTANCE_NAME ?? 'dingding';
 
 async function apiFetch(path: string, options?: RequestInit) {
   const res = await fetch(`${API_URL}${path}`, options);
@@ -10,7 +11,11 @@ async function apiFetch(path: string, options?: RequestInit) {
   return res.json();
 }
 
-const server = new FastMCP({ name: 'dingding', version: '1.0.0' });
+const server = new FastMCP({
+  name: INSTANCE_NAME,
+  version: '1.0.0',
+  instructions: `You are controlling the alarms and timers for the ${INSTANCE_NAME}. Use these tools when the user wants to set, check, or stop an alarm or timer in the ${INSTANCE_NAME}.`,
+});
 
 server.addTool({
   name: 'list_alarms',

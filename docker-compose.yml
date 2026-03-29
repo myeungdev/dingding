@@ -19,5 +19,6 @@ services:
       MCP_TRANSPORT: httpStream
       MCP_PORT: 3001
       DINGDING_API_URL: http://api:3000
+      INSTANCE_NAME: Kitchen
     depends_on:
       - api
