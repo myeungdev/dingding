@@ -32,7 +32,7 @@ function spawnArgs(filePath: string): [string, string[]] {
     case 'darwin':
       return ['afplay', [filePath]];
     case 'linux':
-      return ['aplay', [filePath]];
+      return ['mpg123', ['-q', filePath]];
     default:
       return ['powershell', ['-c', `(New-Object Media.SoundPlayer '${filePath}').PlaySync()`]];
   }
