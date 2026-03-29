@@ -31,8 +31,11 @@ function spawnArgs(filePath: string): [string, string[]] {
   switch (process.platform) {
     case 'darwin':
       return ['afplay', [filePath]];
-    case 'linux':
-      return ['mpg123', ['-q', filePath]];
+    case 'linux': {
+      const device = process.env.AUDIO_DEVICE;
+      const args = device ? ['-q', '-a', device, filePath] : ['-q', filePath];
+      return ['mpg123', args];
+    }
     default:
       return ['powershell', ['-c', `(New-Object Media.SoundPlayer '${filePath}').PlaySync()`]];
   }
