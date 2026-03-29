@@ -90,6 +90,6 @@ const port = Number(process.env.MCP_PORT ?? 3001);
 
 server.start(
   transport === 'httpStream'
-    ? { transportType: 'httpStream', httpStream: { port } }
+    ? { transportType: 'httpStream', httpStream: { host: '0.0.0.0', port } }
     : { transportType: 'stdio' }
 );
