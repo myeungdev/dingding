@@ -24,6 +24,7 @@ RUN pnpm install --frozen-lockfile --prod
 COPY --from=builder /app/dist ./dist
 
 ENV NODE_ENV=production
+ENV ALARM_SOUND_PATH=/sounds/bell.mp3
 EXPOSE 3000
 
 CMD ["node", "dist/index.js"]

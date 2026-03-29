@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import { existsSync } from 'fs';
 import express, { Request, Response } from 'express';
 import {
   listAlarms,
@@ -9,8 +10,10 @@ import {
   parseTime,
 } from './alarms';
 
-if (!process.env.ALARM_SOUND_PATH) {
-  console.error('Error: ALARM_SOUND_PATH is not set in the environment.');
+process.env.ALARM_SOUND_PATH ??= '/sounds/bell.mp3';
+
+if (!existsSync(process.env.ALARM_SOUND_PATH)) {
+  console.error(`Error: alarm sound file not found at ${process.env.ALARM_SOUND_PATH}`);
   process.exit(1);
 }
 
