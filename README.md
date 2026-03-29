@@ -8,6 +8,7 @@ A lightweight alarm and kitchen timer REST API built for home automation. Run it
 - Set alarms by exact time — *"7:30pm"*, *"19:30"*
 - Plays a local sound file when triggered, loops until stopped
 - Simple REST API — easy to integrate with any home automation stack
+- MCP server — control alarms directly from Claude and other AI assistants
 - Docker-ready for self-hosting
 
 ## Getting started
@@ -95,6 +96,40 @@ rest_command:
 ```
 
 **Node-RED:** Use an HTTP Request node with `POST http://localhost:3000/alarms` and pass `{"duration": "5 minutes"}` as the JSON body.
+
+## MCP server
+
+dingding ships an [MCP](https://modelcontextprotocol.io) server so you can control alarms directly from Claude or any MCP-compatible AI assistant.
+
+### Tools
+
+| Tool | Description |
+|------|-------------|
+| `list_alarms` | List all active and ringing alarms |
+| `create_timer` | Start a countdown — e.g. `"15 minutes"` |
+| `create_alarm` | Set an alarm for a specific time — e.g. `"7:30pm"` |
+| `stop_ringing_alarm` | Stop the currently playing alarm |
+| `delete_alarm` | Delete a specific alarm by ID |
+
+### Configure in Claude Code
+
+Add to your Claude Code MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "dingding": {
+      "command": "node",
+      "args": ["/path/to/dingding/dist/mcp.js"],
+      "env": {
+        "ALARM_SOUND_PATH": "/path/to/alarm.wav"
+      }
+    }
+  }
+}
+```
+
+Then build once with `pnpm build` and Claude can set timers on your behalf.
 
 ## Development
 
