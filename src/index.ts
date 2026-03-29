@@ -4,6 +4,7 @@ import {
   listAlarms,
   createAlarm,
   deleteAlarm,
+  deleteRingingAlarm,
   parseDuration,
   parseTime,
 } from './alarms';
@@ -52,6 +53,16 @@ app.post('/alarms', (req: Request, res: Response) => {
   } catch (err: unknown) {
     res.status(400).json({ error: err instanceof Error ? err.message : String(err) });
   }
+});
+
+// DELETE /alarms/ringing — stop and delete the currently playing alarm
+app.delete('/alarms/ringing', (_req: Request, res: Response) => {
+  const deleted = deleteRingingAlarm();
+  if (!deleted) {
+    res.status(404).json({ error: 'No alarm is currently ringing.' });
+    return;
+  }
+  res.status(204).send();
 });
 
 // DELETE /alarms/:id — stop and delete an alarm

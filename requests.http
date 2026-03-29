@@ -47,5 +47,8 @@ Content-Type: application/json
   "time": "19:30"
 }
 
-### Delete / stop an alarm (replace with real id)
+### Stop the currently ringing alarm
+DELETE {{baseUrl}}/alarms/ringing
+
+### Delete / stop an alarm by id (replace with real id)
 DELETE {{baseUrl}}/alarms/00000000-0000-0000-0000-000000000000

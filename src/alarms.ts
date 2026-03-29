@@ -44,6 +44,12 @@ export function createAlarm(triggerAt: Date, label?: string): Alarm {
   return toPublic(entry);
 }
 
+export function deleteRingingAlarm(): boolean {
+  const ringing = [...store.values()].find((e) => e.status === 'ringing');
+  if (!ringing) return false;
+  return deleteAlarm(ringing.id);
+}
+
 export function deleteAlarm(id: string): boolean {
   const entry = store.get(id);
   if (!entry) return false;
