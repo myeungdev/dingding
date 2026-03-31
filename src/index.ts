@@ -11,6 +11,7 @@ import {
 } from './alarms';
 
 process.env.ALARM_SOUND_PATH ??= '/sounds/bell.mp3';
+process.env.ALARM_VOLUME ??= '100';
 
 if (!existsSync(process.env.ALARM_SOUND_PATH)) {
   console.error(`Error: alarm sound file not found at ${process.env.ALARM_SOUND_PATH}`);
