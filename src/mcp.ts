@@ -28,7 +28,7 @@ server.addTool({
 
 server.addTool({
   name: 'create_timer',
-  description: 'Create a countdown timer that fires after a given duration (e.g. "15 minutes", "1h30m", "90s")',
+  description: 'Create a countdown timer that fires after a given duration (e.g. "15 minutes", "1h30m", "90s"). When it goes off, an alarm sound plays directly on the speaker — you will not be notified.',
   parameters: z.object({
     duration: z.string().describe('How long until the timer fires, e.g. "15 minutes", "1h30m", "90s"'),
   }),
@@ -45,7 +45,7 @@ server.addTool({
 
 server.addTool({
   name: 'create_alarm',
-  description: 'Create an alarm that fires at a specific time of day (e.g. "7:30pm", "19:30"). Rolls to tomorrow if the time has already passed.',
+  description: 'Create an alarm that fires at a specific time of day (e.g. "7:30pm", "19:30"). Rolls to tomorrow if the time has already passed. When it goes off, an alarm sound plays directly on the speaker — you will not be notified.',
   parameters: z.object({
     time: z.string().describe('Time of day to ring, e.g. "7:30pm", "19:30", "7am"'),
   }),
