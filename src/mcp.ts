@@ -1,6 +1,6 @@
 import 'dotenv/config';
-import { FastMCP, UserError } from 'fastmcp';
-import { z } from 'zod';
+import {FastMCP, UserError} from 'fastmcp';
+import {z} from 'zod';
 
 const API_URL = (process.env.DINGDING_API_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 const INSTANCE_NAME = process.env.INSTANCE_NAME ?? 'dingding';
@@ -31,13 +31,12 @@ server.addTool({
   description: 'Create a countdown timer that fires after a given duration (e.g. "15 minutes", "1h30m", "90s")',
   parameters: z.object({
     duration: z.string().describe('How long until the timer fires, e.g. "15 minutes", "1h30m", "90s"'),
-    label: z.string().optional().describe('Optional name for the timer'),
   }),
-  execute: async ({ duration, label }) => {
+  execute: async ({duration}) => {
     const body = await apiFetch('/alarms', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ duration, label }),
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({duration,}),
     });
     if (body?.error) throw new UserError(body.error);
     return JSON.stringify(body, null, 2);
@@ -49,13 +48,12 @@ server.addTool({
   description: 'Create an alarm that fires at a specific time of day (e.g. "7:30pm", "19:30"). Rolls to tomorrow if the time has already passed.',
   parameters: z.object({
     time: z.string().describe('Time of day to ring, e.g. "7:30pm", "19:30", "7am"'),
-    label: z.string().optional().describe('Optional name for the alarm'),
   }),
-  execute: async ({ time, label }) => {
+  execute: async ({time,}) => {
     const body = await apiFetch('/alarms', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ time, label }),
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({time,}),
     });
     if (body?.error) throw new UserError(body.error);
     return JSON.stringify(body, null, 2);
@@ -64,9 +62,9 @@ server.addTool({
 
 server.addTool({
   name: 'stop_ringing_alarm',
-  description: 'Stop and dismiss the alarm that is currently playing sound',
+  description: 'Stop and dismiss the alarm that is currently playing sound. Use this if the user asks to stop the alarm or timer.',
   execute: async () => {
-    const body = await apiFetch('/alarms/ringing', { method: 'DELETE' });
+    const body = await apiFetch('/alarms/ringing', {method: 'DELETE'});
     if (body?.error) throw new UserError(body.error);
     return 'Ringing alarm stopped.';
   },
@@ -78,8 +76,8 @@ server.addTool({
   parameters: z.object({
     id: z.string().describe('The alarm ID to delete'),
   }),
-  execute: async ({ id }) => {
-    const body = await apiFetch(`/alarms/${id}`, { method: 'DELETE' });
+  execute: async ({id}) => {
+    const body = await apiFetch(`/alarms/${id}`, {method: 'DELETE'});
     if (body?.error) throw new UserError(body.error);
     return `Alarm "${id}" deleted.`;
   },
@@ -90,6 +88,6 @@ const port = Number(process.env.MCP_PORT ?? 3001);
 
 server.start(
   transport === 'httpStream'
-    ? { transportType: 'httpStream', httpStream: { host: '0.0.0.0', port } }
-    : { transportType: 'stdio' }
+    ? {transportType: 'httpStream', httpStream: {host: '0.0.0.0', port}}
+    : {transportType: 'stdio'}
 );
