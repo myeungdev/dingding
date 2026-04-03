@@ -19,7 +19,7 @@ const server = new FastMCP({
 
 server.addTool({
   name: 'list_alarms',
-  description: 'List all active and ringing alarms/timers',
+  description: `List all active and ringing alarms/timers in the ${INSTANCE_NAME}`,
   execute: async () => {
     const alarms = await apiFetch('/alarms');
     return JSON.stringify(alarms, null, 2);
@@ -28,7 +28,7 @@ server.addTool({
 
 server.addTool({
   name: 'create_timer',
-  description: 'Create a countdown timer that fires after a given duration (e.g. "15 minutes", "1h30m", "90s"). When it goes off, an alarm sound plays directly on the speaker — you will not be notified.',
+  description: `Create a countdown timer in the ${INSTANCE_NAME} that fires after a given duration (e.g. "15 minutes", "1h30m", "90s"). When it goes off, an alarm sound plays directly on the speaker — you will not be notified.`,
   parameters: z.object({
     duration: z.string().describe('How long until the timer fires, e.g. "15 minutes", "1h30m", "90s"'),
   }),
@@ -45,7 +45,7 @@ server.addTool({
 
 server.addTool({
   name: 'create_alarm',
-  description: 'Create an alarm that fires at a specific time of day (e.g. "7:30pm", "19:30"). Rolls to tomorrow if the time has already passed. When it goes off, an alarm sound plays directly on the speaker — you will not be notified.',
+  description: `Create an alarm in the ${INSTANCE_NAME} that fires at a specific time of day (e.g. "7:30pm", "19:30"). Rolls to tomorrow if the time has already passed. When it goes off, an alarm sound plays directly on the speaker — you will not be notified.`,
   parameters: z.object({
     time: z.string().describe('Time of day to ring, e.g. "7:30pm", "19:30", "7am"'),
   }),
@@ -62,7 +62,7 @@ server.addTool({
 
 server.addTool({
   name: 'stop_ringing_alarm',
-  description: 'Stop and dismiss the alarm that is currently playing sound. Use this if the user asks to stop the alarm or timer.',
+  description: `Stop and dismiss the alarm that is currently playing sound in the ${INSTANCE_NAME}. Use this if the user asks to stop the alarm or timer.`,
   execute: async () => {
     const body = await apiFetch('/alarms/ringing', {method: 'DELETE'});
     if (body?.error) throw new UserError(body.error);
@@ -72,7 +72,7 @@ server.addTool({
 
 server.addTool({
   name: 'delete_alarm',
-  description: 'Delete a specific alarm or timer by its ID',
+  description: `Delete a specific alarm or timer in the ${INSTANCE_NAME} by its ID`,
   parameters: z.object({
     id: z.string().describe('The alarm ID to delete'),
   }),
